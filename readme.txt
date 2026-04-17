@@ -40,6 +40,7 @@ Further “agent readiness” features (broader API discovery, additional format
 
 1. Copy the `agent-ready` folder into `wp-content/plugins/` (or install the distributed package).
 2. Activate **Agent Ready** under Plugins in the WordPress admin.
+3. That's it! AI Agents will automatically discover your site's content.
 
 == Frequently Asked Questions ==
 

@@ -68,8 +68,10 @@ mkdir -p languages
 wp i18n make-pot . "$POT_RELATIVE"
 
 # Remove files not shipped to WordPress.org (aligned with wc-price-history release layout).
+# Keep composer.json (and composer.lock) in the package.
 rm -rf .git .github .husky .scripts node_modules tests \
-  .gitignore .phpunit.result.cache composer.* \
+  .gitignore .phpunit.result.cache \
+  .editorconfig .distignore \
   package-lock.json package.json phpunit.xml phpunit.xml.dist \
   phpstan.neon phpstan.neon.dist phpstan-custom-rules \
   README.md docs

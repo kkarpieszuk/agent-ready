@@ -1,8 +1,23 @@
 {
+  "name": "kolibia/agent-ready",
+  "description": "Agent Ready WordPress plugin",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Agent_Ready\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0"
+  },
   "require-dev": {
     "wp-cli/i18n-command": "^2"
   },
   "scripts": {
     "makepot": "wp i18n make-pot ."
+  },
+  "config": {
+    "sort-packages": true
   }
 }

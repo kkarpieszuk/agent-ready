@@ -2,13 +2,13 @@
 /**
  * Main plugin bootstrap.
  *
- * @package Agent_Ready
+ * @package Wp_Are
  */
 
-namespace Agent_Ready;
+namespace Wp_Are;
 
-use Agent_Ready\Admin\Post_List;
-use Agent_Ready\Markdown\Single_Post_Markdown;
+use Wp_Are\Admin\Post_List;
+use Wp_Are\Markdown\Single_Post_Markdown;
 
 /**
  * Plugin singleton and entry point for namespaced code.

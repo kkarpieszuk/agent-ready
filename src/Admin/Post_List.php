@@ -2,16 +2,16 @@
 /**
  * Post list table row actions in wp-admin.
  *
- * @package Agent_Ready
+ * @package Wp_Are
  */
 
-namespace Agent_Ready\Admin;
+namespace Wp_Are\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Agent_Ready\Builtin_Post_Types;
+use Wp_Are\Builtin_Post_Types;
 use WP_Post;
 
 /**
@@ -39,7 +39,7 @@ final class Post_List {
 			return $actions;
 		}
 
-		$types = apply_filters( 'agent_ready_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
+		$types = apply_filters( 'wp_are_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		if ( ! in_array( $post->post_type, $types, true ) ) {
 			return $actions;
 		}
@@ -52,10 +52,10 @@ final class Post_List {
 		$link = sprintf(
 			'<a href="%s" rel="bookmark">%s</a>',
 			esc_url( $url ),
-			esc_html__( 'View as AI Agent', 'agent-ready' )
+			esc_html__( 'View as AI Agent', 'agent-ready-essentials' )
 		);
 
-		return $this->insert_after_key( $actions, 'view', 'agent_ready_markdown', $link );
+		return $this->insert_after_key( $actions, 'view', 'wp_are_markdown', $link );
 	}
 
 	/**

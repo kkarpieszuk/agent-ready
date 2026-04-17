@@ -2,10 +2,10 @@
 /**
  * Default post type lists aligned with WordPress core.
  *
- * @package Agent_Ready
+ * @package Wp_Are
  */
 
-namespace Agent_Ready;
+namespace Wp_Are;
 
 /**
  * Built-in public post types (post, page, attachment, …) for Markdown features.

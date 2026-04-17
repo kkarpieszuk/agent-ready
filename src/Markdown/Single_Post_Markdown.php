@@ -2,16 +2,16 @@
 /**
  * Serves single posts as Markdown when clients negotiate text/markdown or use ?output_format=md.
  *
- * @package Agent_Ready
+ * @package Wp_Are
  */
 
-namespace Agent_Ready\Markdown;
+namespace Wp_Are\Markdown;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Agent_Ready\Builtin_Post_Types;
+use Wp_Are\Builtin_Post_Types;
 use League\HTMLToMarkdown\HtmlConverter;
 use WP_Post;
 
@@ -48,7 +48,7 @@ final class Single_Post_Markdown {
 			return;
 		}
 
-		$post_types = apply_filters( 'agent_ready_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
+		$post_types = apply_filters( 'wp_are_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		if ( ! is_singular( $post_types ) ) {
 			return;
 		}
@@ -72,7 +72,7 @@ final class Single_Post_Markdown {
 				exit;
 			}
 			$password_md = apply_filters(
-				'agent_ready_markdown_password_required',
+				'wp_are_markdown_password_required',
 				$this->build_password_required_markdown( $post ),
 				$post
 			);
@@ -82,7 +82,7 @@ final class Single_Post_Markdown {
 		}
 
 		$markdown = $this->build_post_markdown( $post );
-		$markdown = apply_filters( 'agent_ready_post_markdown', $markdown, $post );
+		$markdown = apply_filters( 'wp_are_post_markdown', $markdown, $post );
 
 		$this->send_markdown_headers();
 		if ( 'HEAD' === $this->get_request_method() ) {
@@ -98,7 +98,7 @@ final class Single_Post_Markdown {
 	 * Print <link rel="alternate" type="text/markdown"> for discoverability.
 	 */
 	public function print_alternate_link(): void {
-		$post_types = apply_filters( 'agent_ready_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
+		$post_types = apply_filters( 'wp_are_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		if ( ! is_singular( $post_types ) ) {
 			return;
 		}

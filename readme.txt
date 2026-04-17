@@ -1,4 +1,4 @@
-=== Agent Ready ===
+=== Agent Ready Essentials ===
 Contributors: kkarpieszuk
 Tags: ai, markdown, agents, llm, content-negotiation
 Requires at least: 6.8
@@ -8,11 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Agent Ready adds API discovery and Markdown responses so AI agents can use your WordPress content and services.
+Agent Ready Essentials adds API discovery and Markdown responses so AI agents can use your WordPress content and services.
 
 == Description ==
 
-Agent Ready makes **singular** WordPress content available as **Markdown** so tools and agents do not have to scrape HTML. Behaviour follows common **content negotiation** patterns (similar in spirit to [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) on Cloudflare): clients that prefer Markdown can request it explicitly.
+Agent Ready Essentials makes **singular** WordPress content available as **Markdown** so tools and agents do not have to scrape HTML. Behaviour follows common **content negotiation** patterns (similar in spirit to [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) on Cloudflare): clients that prefer Markdown can request it explicitly.
 
 **What is included today**
 
@@ -27,9 +27,9 @@ Agent Ready makes **singular** WordPress content available as **Markdown** so to
 
 **Developer filters**
 
-* `agent_ready_markdown_post_types` — Defaults to all **public, built-in** post types from core; override to add custom post types or remove types (e.g. `attachment`).
-* `agent_ready_post_markdown` — Filter the final Markdown string.
-* `agent_ready_markdown_password_required` — Filter the Markdown shown when a password is required.
+* `wp_are_markdown_post_types` — Defaults to all **public, built-in** post types from core; override to add custom post types or remove types (e.g. `attachment`).
+* `wp_are_post_markdown` — Filter the final Markdown string.
+* `wp_are_markdown_password_required` — Filter the Markdown shown when a password is required.
 
 **Roadmap**
 
@@ -38,7 +38,7 @@ Further “agent readiness” features (broader API discovery, additional format
 == Installation ==
 
 1. Copy the `agent-ready` folder into `wp-content/plugins/` (or install the distributed package).
-2. Activate **Agent Ready** under Plugins in the WordPress admin.
+2. Activate **Agent Ready Essentials** under Plugins in the WordPress admin.
 3. That's it! AI Agents will automatically discover your site's content.
 
 == Frequently Asked Questions ==
@@ -53,7 +53,7 @@ No. Normal visitors still get HTML. Markdown is returned only when `text/markdow
 
 = Which URLs are affected? =
 
-Singular URLs for built-in public types from core (typically posts, pages, and media attachment pages). Custom post types are not included unless you add them via the `agent_ready_markdown_post_types` filter.
+Singular URLs for built-in public types from core (typically posts, pages, and media attachment pages). Custom post types are not included unless you add them via the `wp_are_markdown_post_types` filter.
 
 == Changelog ==
 

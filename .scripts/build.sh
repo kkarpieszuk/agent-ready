@@ -11,7 +11,7 @@ set -e
 
 cd "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-PLUGIN_SLUG="agent-ready"
+PLUGIN_SLUG="agent-ready-essentials"
 SVN_URL="https://plugins.svn.wordpress.org/${PLUGIN_SLUG}/"
 ZIP_NAME="${PLUGIN_SLUG}.zip"
 POT_RELATIVE="languages/${PLUGIN_SLUG}.pot"

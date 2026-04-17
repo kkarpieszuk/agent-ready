@@ -7,6 +7,9 @@
 
 namespace Agent_Ready;
 
+use Agent_Ready\Admin\Post_List;
+use Agent_Ready\Markdown\Single_Post_Markdown;
+
 /**
  * Plugin singleton and entry point for namespaced code.
  */
@@ -33,6 +36,7 @@ final class Plugin {
 	 * Register hooks.
 	 */
 	public function init(): void {
-		// Intentionally minimal — extend here as features are added.
+		( new Single_Post_Markdown() )->register();
+		( new Post_List() )->register();
 	}
 }

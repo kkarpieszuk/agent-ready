@@ -1,10 +1,10 @@
 === Agent Ready ===
 Contributors: (this should be a list of wordpress.org userid's)
 Donate link: https://example.com/
-Tags: comments, spam
-Requires at least: 4.5
+Tags: ai, markdown, agents, llm, content-negotiation
+Requires at least: 6.8
 Tested up to: 7.0-beta6
-Requires PHP: 5.6
+Requires PHP: 8.0
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,87 +13,49 @@ Agent Ready adds API discovery and Markdown responses so AI agents can use your 
 
 == Description ==
 
-Agent Ready adds **API discovery** and **Markdown responses** so AI agents can use your WordPress content and services. The goal is to make your site legible to LLMs and other automated clients: they can learn what your site exposes and receive answers in formats suited to tooling, not only HTML for browsers.
+Agent Ready makes **singular** WordPress content available as **Markdown** so tools and agents do not have to scrape HTML. Behaviour follows common **content negotiation** patterns (similar in spirit to [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) on Cloudflare): clients that prefer Markdown can request it explicitly.
 
-**What the plugin will provide**
+**What is included today**
 
-* **API discovery** — machine-readable discovery (metadata and/or endpoints) so agents can find capabilities tied to your site: content types, key routes, integrations (e.g. WooCommerce, forms), and how to call them safely.
-* **Markdown responses** — structured responses (including Markdown) where it helps agents parse summaries, lists, and links without scraping fragile front-end markup.
-* **Grounding in WordPress** — discovery and responses stay tied to your real posts, products, settings, and plugins so agents reflect what your site actually offers.
+* **Markdown responses for singular content** — For each **built-in public post type** registered by WordPress core (`post`, `page`, `attachment` on a typical site), a single-item URL can return `Content-Type: text/markdown; charset=UTF-8` instead of the themed HTML page.
+* **When Markdown is served**
+  * The request includes an `Accept` header that lists **`text/markdown`** (requests with `text/markdown;q=0` are ignored).
+  * **Or** the URL includes the query argument **`output_format=md`** (handy for browsers and manual testing).
+* **HTML to Markdown** — Rendered post body is passed through WordPress’s `the_content` filters, then converted to Markdown using the [league/html-to-markdown](https://github.com/thephpleague/html-to-markdown) library. A short YAML front matter block includes `title` and `permalink`.
+* **Password-protected content** — If a password is required, the response is a small Markdown message instead of the full body.
+* **Discovery in HTML** — On the normal HTML view, the plugin prints `<link rel="alternate" type="text/markdown" href="…?output_format=md" />` so clients can find the Markdown URL.
+* **Admin shortcut** — On the posts and pages list screens, a row action **View as AI Agent** opens the same Markdown URL (preview URLs are used for drafts where WordPress would show Preview).
 
-This is an early release; features will roll out incrementally. Install Agent Ready when you want your site to align with emerging “agent readiness” patterns for WordPress.
+**Developer filters**
+
+* `agent_ready_markdown_post_types` — Defaults to all **public, built-in** post types from core; override to add custom post types or remove types (e.g. `attachment`).
+* `agent_ready_post_markdown` — Filter the final Markdown string.
+* `agent_ready_markdown_password_required` — Filter the Markdown shown when a password is required.
+
+**Roadmap**
+
+Further “agent readiness” features (broader API discovery, additional formats) may be added in future releases.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Copy the `agent-ready` folder into `wp-content/plugins/` (or install the distributed package).
+2. Activate **Agent Ready** under Plugins in the WordPress admin.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Do I need to configure anything? =
 
-An answer to that question.
+No. Just activate the plugin and you're good to go. AI Agents will automatically discover your site's content.
 
-= What about foo bar? =
+= Does this replace my theme for visitors? =
 
-Answer to foo bar dilemma.
+No. Normal visitors still get HTML. Markdown is returned only when `text/markdown` is negotiated or `?output_format=md` is used (and the same permission rules as viewing the content apply).
 
-== Screenshots ==
+= Which URLs are affected? =
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+Singular URLs for built-in public types from core (typically posts, pages, and media attachment pages). Custom post types are not included unless you add them via the `agent_ready_markdown_post_types` filter.
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](https://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: https://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
+= 0.1.0 =
+* Initial release: Markdown negotiation, `output_format=md`, alternate link, admin “View as AI Agent”, HTML-to-Markdown for singular core public post types.

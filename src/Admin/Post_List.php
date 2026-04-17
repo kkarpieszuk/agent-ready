@@ -7,6 +7,10 @@
 
 namespace Agent_Ready\Admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use Agent_Ready\Builtin_Post_Types;
 use WP_Post;
 

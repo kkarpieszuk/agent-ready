@@ -4,7 +4,7 @@ Tags: ai, markdown, agents, llm, content-negotiation
 Requires at least: 6.8
 Tested up to: 7.0-beta6
 Requires PHP: 8.0
-Stable tag: 0.1.0
+Stable tag: {VERSION}
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,5 +57,5 @@ Singular URLs for built-in public types from core (typically posts, pages, and m
 
 == Changelog ==
 
-= 0.1.0 =
+= {VERSION} =
 * Initial release: Markdown negotiation, `output_format=md`, alternate link, admin “View as AI Agent”, HTML-to-Markdown for singular core public post types.

@@ -7,6 +7,10 @@
 
 namespace Agent_Ready\Markdown;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use Agent_Ready\Builtin_Post_Types;
 use League\HTMLToMarkdown\HtmlConverter;
 use WP_Post;
@@ -112,11 +116,10 @@ final class Single_Post_Markdown {
 			return true;
 		}
 
-		if ( isset( $_GET['output_format'] ) && 'md' === sanitize_key( wp_unslash( $_GET['output_format'] ) ) ) {
-			return true;
+		$accept = '';
+		if ( isset( $_SERVER['HTTP_ACCEPT'] ) ) {
+			$accept = strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT'] ) ) );
 		}
-
-		$accept = isset( $_SERVER['HTTP_ACCEPT'] ) ? strtolower( (string) wp_unslash( $_SERVER['HTTP_ACCEPT'] ) ) : '';
 		if ( '' === $accept ) {
 			return false;
 		}
@@ -153,6 +156,7 @@ final class Single_Post_Markdown {
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required for the_content filters.
 		$post = $post_object;
 		setup_postdata( $post );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core filter.
 		$content_html = apply_filters( 'the_content', $post->post_content );
 		wp_reset_postdata();
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -215,6 +219,10 @@ final class Single_Post_Markdown {
 	}
 
 	private function get_request_method(): string {
-		return isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : 'GET';
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) ) {
+			return 'GET';
+		}
+
+		return strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) );
 	}
 }

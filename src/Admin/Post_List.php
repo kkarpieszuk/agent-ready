@@ -2,16 +2,16 @@
 /**
  * Post list table row actions in wp-admin.
  *
- * @package Wp_Are
+ * @package Kolibia_AR
  */
 
-namespace Wp_Are\Admin;
+namespace Kolibia_AR\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Wp_Are\Builtin_Post_Types;
+use Kolibia_AR\Builtin_Post_Types;
 use WP_Post;
 
 /**
@@ -39,7 +39,7 @@ final class Post_List {
 			return $actions;
 		}
 
-		$types = apply_filters( 'wp_are_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
+		$types = apply_filters( 'kolibia_ar_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		if ( ! in_array( $post->post_type, $types, true ) ) {
 			return $actions;
 		}
@@ -52,10 +52,10 @@ final class Post_List {
 		$link = sprintf(
 			'<a href="%s" rel="bookmark">%s</a>',
 			esc_url( $url ),
-			esc_html__( 'View as AI Agent', 'agent-ready-essentials' )
+			esc_html__( 'View as AI Agent', 'kolibia-agent-ready' )
 		);
 
-		return $this->insert_after_key( $actions, 'view', 'wp_are_markdown', $link );
+		return $this->insert_after_key( $actions, 'view', 'kolibia_ar_markdown', $link );
 	}
 
 	/**

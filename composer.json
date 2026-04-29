@@ -1,11 +1,11 @@
 {
-  "name": "kolibia/agent-ready-essentials",
-  "description": "Agent Ready Essentials WordPress plugin",
+  "name": "kolibia/kolibia-agent-ready",
+  "description": "Kolibia Agent-Ready WordPress plugin",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "autoload": {
     "psr-4": {
-      "Wp_Are\\": "src/"
+      "Kolibia_AR\\": "src/"
     }
   },
   "require": {

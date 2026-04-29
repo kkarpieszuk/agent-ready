@@ -2,13 +2,13 @@
 /**
  * Main plugin bootstrap.
  *
- * @package Wp_Are
+ * @package Kolibia_AR
  */
 
-namespace Wp_Are;
+namespace Kolibia_AR;
 
-use Wp_Are\Admin\Post_List;
-use Wp_Are\Markdown\Single_Post_Markdown;
+use Kolibia_AR\Admin\Post_List;
+use Kolibia_AR\Markdown\Single_Post_Markdown;
 
 /**
  * Plugin singleton and entry point for namespaced code.

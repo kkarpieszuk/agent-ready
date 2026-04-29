@@ -2,10 +2,10 @@
 /**
  * Default post type lists aligned with WordPress core.
  *
- * @package Wp_Are
+ * @package Kolibia_AR
  */
 
-namespace Wp_Are;
+namespace Kolibia_AR;
 
 /**
  * Built-in public post types (post, page, attachment, …) for Markdown features.

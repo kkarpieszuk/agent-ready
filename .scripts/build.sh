@@ -65,7 +65,7 @@ rm -rf vendor
 composer install --no-dev --no-interaction --optimize-autoloader
 
 mkdir -p languages
-wp i18n make-pot . "$POT_RELATIVE"
+wp i18n make-pot . "$POT_RELATIVE" --domain="$PLUGIN_SLUG"
 
 # Remove files not shipped to WordPress.org (aligned with wc-price-history release layout).
 # Keep composer.json (and composer.lock) in the package.

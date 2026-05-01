@@ -103,8 +103,12 @@ final class Single_Post_Markdown {
 			return;
 		}
 
-		$url = add_query_arg( 'output_format', 'md', get_permalink() );
-		echo '<link rel="alternate" type="text/markdown" href="' . esc_url( $url ) . '" />' . "\n";
+		$url   = add_query_arg( 'output_format', 'md', get_permalink() );
+		$title = esc_attr__(
+			'Markdown alternate of this content for Large Language Models and other AI agents.',
+			'kolibia-agent-ready'
+		);
+		echo '<link rel="alternate" type="text/markdown" title="' . $title . '" href="' . esc_url( $url ) . '" />' . "\n";
 	}
 
 	/**

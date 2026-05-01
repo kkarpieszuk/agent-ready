@@ -16,7 +16,7 @@
     "wp-cli/i18n-command": "^2"
   },
   "scripts": {
-    "makepot": "wp i18n make-pot ."
+    "makepot": "wp i18n make-pot . languages/kolibia-agent-ready.pot --domain=kolibia-agent-ready"
   },
   "config": {
     "sort-packages": true

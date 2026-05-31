@@ -145,6 +145,7 @@ final class Blog_Index_Markdown {
 		}
 
 		$post_types = apply_filters( 'kolibia_ar_home_markdown_post_types', [ 'post' ] );
+		$converter  = $this->create_html_converter();
 
 		if ( have_posts() ) {
 			$lines[] = '## Posts';
@@ -166,7 +167,7 @@ final class Blog_Index_Markdown {
 					continue;
 				}
 
-				$lines[] = $this->build_loop_item_markdown( $post );
+				$lines[] = $this->build_loop_item_markdown( $post, $converter );
 				$lines[] = '';
 			}
 		} else {
@@ -179,12 +180,13 @@ final class Blog_Index_Markdown {
 	}
 
 	/**
-	 * @param WP_Post $post Post in the main loop.
+	 * @param WP_Post        $post      Post in the main loop.
+	 * @param HtmlConverter $converter Shared HTML-to-Markdown converter.
 	 */
-	private function build_loop_item_markdown( WP_Post $post ): string {
+	private function build_loop_item_markdown( WP_Post $post, HtmlConverter $converter ): string {
 		$title     = $this->get_post_title_plain( $post );
 		$permalink = get_permalink( $post ) ?: '';
-		$excerpt   = $this->get_post_excerpt_markdown( $post );
+		$excerpt   = $this->get_post_excerpt_markdown( $post, $converter );
 
 		$block  = '### ' . $this->plain_one_line( $title ) . "\n\n";
 		$block .= $excerpt;
@@ -197,9 +199,10 @@ final class Blog_Index_Markdown {
 	}
 
 	/**
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post        $post_object Post object.
+	 * @param HtmlConverter $converter   Shared HTML-to-Markdown converter.
 	 */
-	private function get_post_excerpt_markdown( WP_Post $post_object ): string {
+	private function get_post_excerpt_markdown( WP_Post $post_object, HtmlConverter $converter ): string {
 		global $post;
 		$backup = $post;
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required for the_excerpt / the_content filters.
@@ -221,14 +224,19 @@ final class Blog_Index_Markdown {
 			return '';
 		}
 
-		$converter = new HtmlConverter(
+		return trim( $converter->convert( $excerpt_html ) );
+	}
+
+	/**
+	 * HtmlConverter instance reused across loop items (same options as before).
+	 */
+	private function create_html_converter(): HtmlConverter {
+		return new HtmlConverter(
 			[
 				'header_style' => 'atx',
 				'remove_nodes' => 'script style',
 			]
 		);
-
-		return trim( $converter->convert( $excerpt_html ) );
 	}
 
 	/**

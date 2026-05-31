@@ -12,11 +12,13 @@ Kolibia Agent-Ready adds API discovery and Markdown responses so AI agents can u
 
 == Description ==
 
-Kolibia Agent-Ready makes **singular** WordPress content available as **Markdown** so tools and agents do not have to scrape HTML. Behaviour follows common **content negotiation** patterns (similar in spirit to [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) on Cloudflare): clients that prefer Markdown can request it explicitly.
+Kolibia Agent-Ready makes WordPress content available as **Markdown** so tools and agents do not have to scrape HTML. Behaviour follows common **content negotiation** patterns (similar in spirit to [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) on Cloudflare): clients that prefer Markdown can request it explicitly.
 
 **What is included today**
 
 * **Markdown responses for singular content** — For each **built-in public post type** registered by WordPress core (`post`, `page`, `attachment` on a typical site), a single-item URL can return `Content-Type: text/markdown; charset=UTF-8` instead of the themed HTML page.
+* **Markdown for the posts index** — When the site front page shows **latest posts** (WordPress “Your homepage displays: Your latest posts”), the homepage and other blog-index URLs return Markdown listing the same posts as the main loop.
+* **Static or WooCommerce shop front page** — When a **page** is set as the front page (including a WooCommerce shop page where WordPress reports `is_singular` as false), that page’s content is still served as Markdown on `/` when clients negotiate `text/markdown`.
 * **When Markdown is served**
   * The request includes an `Accept` header that lists **`text/markdown`** (requests with `text/markdown;q=0` are ignored).
   * **Or** the URL includes the query argument **`output_format=md`** (handy for browsers and manual testing).
@@ -29,6 +31,8 @@ Kolibia Agent-Ready makes **singular** WordPress content available as **Markdown
 
 * `kolibia_ar_markdown_post_types` — Defaults to all **public, built-in** post types from core; override to add custom post types or remove types (e.g. `attachment`).
 * `kolibia_ar_post_markdown` — Filter the final Markdown string.
+* `kolibia_ar_home_markdown` — Filter the Markdown for the posts index / homepage loop.
+* `kolibia_ar_home_markdown_post_types` — Post types included in the homepage Markdown list (default: `post`).
 * `kolibia_ar_markdown_password_required` — Filter the Markdown shown when a password is required.
 
 **Roadmap**
@@ -53,11 +57,13 @@ No. Normal visitors still get HTML. Markdown is returned only when `text/markdow
 
 = Which URLs are affected? =
 
-Singular URLs for built-in public types from core (typically posts, pages, and media attachment pages). Custom post types are not included unless you add them via the `kolibia_ar_markdown_post_types` filter.
+Singular URLs for built-in public types from core (typically posts, pages, and media attachment pages), plus the **posts index** when it is the blog home (`is_home()`), including the common “latest posts on front page” setup. A **static page** as the front page is served as Markdown like any other singular page. Custom post types are not included unless you add them via the `kolibia_ar_markdown_post_types` filter.
 
 == Changelog ==
 
 = {VERSION} =
+* Markdown content negotiation for the posts index / homepage (latest posts on front page).
+* Add `X-Markdown-Tokens` response header (rough estimate).
 * Add `title` attribute to alternate link.
 
 = 1.0.0 =

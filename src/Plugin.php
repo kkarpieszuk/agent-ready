@@ -8,6 +8,7 @@
 namespace Kolibia_AR;
 
 use Kolibia_AR\Admin\Post_List;
+use Kolibia_AR\Markdown\Blog_Index_Markdown;
 use Kolibia_AR\Markdown\Single_Post_Markdown;
 
 /**
@@ -37,6 +38,7 @@ final class Plugin {
 	 */
 	public function init(): void {
 		( new Single_Post_Markdown() )->register();
+		( new Blog_Index_Markdown() )->register();
 		( new Post_List() )->register();
 	}
 }

@@ -20,6 +20,8 @@ use WP_Post;
  */
 final class Single_Post_Markdown {
 
+	use Markdown_Negotiation;
+
 	/**
 	 * Register WordPress hooks.
 	 */
@@ -49,11 +51,7 @@ final class Single_Post_Markdown {
 		}
 
 		$post_types = apply_filters( 'kolibia_ar_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
-		if ( ! is_singular( $post_types ) ) {
-			return;
-		}
-
-		$post = get_queried_object();
+		$post       = $this->resolve_post_for_markdown( $post_types );
 		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
@@ -67,15 +65,15 @@ final class Single_Post_Markdown {
 		}
 
 		if ( post_password_required( $post ) ) {
-			$this->send_markdown_headers();
-			if ( 'HEAD' === $this->get_request_method() ) {
-				exit;
-			}
 			$password_md = apply_filters(
 				'kolibia_ar_markdown_password_required',
 				$this->build_password_required_markdown( $post ),
 				$post
 			);
+			$this->send_markdown_headers( $password_md );
+			if ( 'HEAD' === $this->get_request_method() ) {
+				exit;
+			}
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Markdown document for agents.
 			echo $password_md;
 			exit;
@@ -84,7 +82,7 @@ final class Single_Post_Markdown {
 		$markdown = $this->build_post_markdown( $post );
 		$markdown = apply_filters( 'kolibia_ar_post_markdown', $markdown, $post );
 
-		$this->send_markdown_headers();
+		$this->send_markdown_headers( $markdown );
 		if ( 'HEAD' === $this->get_request_method() ) {
 			exit;
 		}
@@ -99,11 +97,12 @@ final class Single_Post_Markdown {
 	 */
 	public function print_alternate_link(): void {
 		$post_types = apply_filters( 'kolibia_ar_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
-		if ( ! is_singular( $post_types ) ) {
+		$post       = $this->resolve_post_for_markdown( $post_types );
+		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
 
-		$url   = add_query_arg( 'output_format', 'md', get_permalink() );
+		$url   = add_query_arg( 'output_format', 'md', get_permalink( $post ) );
 		$title = esc_attr__(
 			'Markdown alternate of this content for Large Language Models and other AI agents.',
 			'kolibia-agent-ready'
@@ -112,32 +111,37 @@ final class Single_Post_Markdown {
 	}
 
 	/**
-	 * Whether this request asks for a Markdown representation.
+	 * Resolve the WP_Post to export (singular URL or static/Woo front page).
+	 *
+	 * @param string[] $post_types Allowed post type names.
 	 */
-	private function should_respond_with_markdown(): bool {
-		$format = get_query_var( 'output_format' );
-		if ( '' !== $format && 'md' === sanitize_key( $format ) ) {
-			return true;
+	private function resolve_post_for_markdown( array $post_types ): ?WP_Post {
+		if ( is_singular( $post_types ) ) {
+			$post = get_queried_object();
+
+			return $post instanceof WP_Post ? $post : null;
 		}
 
-		$accept = '';
-		if ( isset( $_SERVER['HTTP_ACCEPT'] ) ) {
-			$accept = strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT'] ) ) );
-		}
-		if ( '' === $accept ) {
-			return false;
+		if ( 'page' !== get_option( 'show_on_front' ) ) {
+			return null;
 		}
 
-		if ( ! str_contains( $accept, 'text/markdown' ) ) {
-			return false;
+		$page_id = (int) get_option( 'page_on_front' );
+		if ( $page_id <= 0 ) {
+			return null;
 		}
 
-		// Reject explicit q=0 for text/markdown (client does not want this type).
-		if ( preg_match( '/text\/markdown\s*;\s*q=\s*0(?:\.0)?\b/', $accept ) ) {
-			return false;
+		if ( ! is_front_page() && ! $this->is_static_front_page_url() ) {
+			return null;
 		}
 
-		return true;
+		$post = get_post( $page_id );
+
+		if ( ! $post instanceof WP_Post || ! in_array( $post->post_type, $post_types, true ) ) {
+			return null;
+		}
+
+		return $post;
 	}
 
 	/**
@@ -198,35 +202,5 @@ final class Single_Post_Markdown {
 		$title = trim( $title );
 
 		return '' === $title ? '(Untitled)' : $title;
-	}
-
-	/**
-	 * YAML double-quoted scalar for front matter.
-	 */
-	private function yaml_double_quoted( string $value ): string {
-		return '"' . str_replace( [ '\\', '"' ], [ '\\\\', '\\"' ], $value ) . '"';
-	}
-
-	/**
-	 * Single-line plain text for ATX heading.
-	 */
-	private function plain_one_line( string $text ): string {
-		return str_replace( "\n", ' ', $text );
-	}
-
-	private function send_markdown_headers(): void {
-		if ( headers_sent() ) {
-			return;
-		}
-		header( 'Content-Type: text/markdown; charset=UTF-8' );
-		header( 'Vary: Accept' );
-	}
-
-	private function get_request_method(): string {
-		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) ) {
-			return 'GET';
-		}
-
-		return strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) );
 	}
 }

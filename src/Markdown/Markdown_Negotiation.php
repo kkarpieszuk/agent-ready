@@ -7,6 +7,8 @@
 
 namespace Kolibia_AR\Markdown;
 
+use WP_Post;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -96,6 +98,27 @@ trait Markdown_Negotiation {
 	 */
 	private function plain_one_line( string $text ): string {
 		return preg_replace( '/\R/u', ' ', $text ) ?? $text;
+	}
+
+	/**
+	 * Plain one-line post title for headings and front matter.
+	 */
+	private function get_post_title_plain( WP_Post $post ): string {
+		$title = wp_strip_all_tags( get_the_title( $post ) );
+		$title = trim( $title );
+
+		return '' === $title ? '(Untitled)' : $title;
+	}
+
+	/**
+	 * Escape a URL for use inside Markdown inline link parentheses.
+	 */
+	private function markdown_link_destination( string $url ): string {
+		return str_replace(
+			[ '\\', '(', ')' ],
+			[ '%5C', '%28', '%29' ],
+			$url
+		);
 	}
 
 	/**

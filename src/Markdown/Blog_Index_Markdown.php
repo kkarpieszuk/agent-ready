@@ -22,24 +22,6 @@ final class Blog_Index_Markdown {
 	use Markdown_Negotiation;
 
 	/**
-	 * Register WordPress hooks.
-	 */
-	public function register(): void {
-		add_filter( 'query_vars', [ $this, 'register_query_var' ] );
-		add_action( 'template_redirect', [ $this, 'maybe_serve_markdown' ], 0 );
-		add_action( 'wp_head', [ $this, 'print_alternate_link' ], 1 );
-	}
-
-	/**
-	 * @param string[] $vars Registered query variables.
-	 * @return string[]
-	 */
-	public function register_query_var( array $vars ): array {
-		$vars[] = 'output_format';
-		return $vars;
-	}
-
-	/**
 	 * Output Markdown instead of HTML when requested on the posts index.
 	 */
 	public function maybe_serve_markdown(): void {
@@ -193,7 +175,7 @@ final class Blog_Index_Markdown {
 		if ( '' !== trim( $excerpt ) ) {
 			$block .= "\n\n";
 		}
-		$block .= '[Read more](' . $permalink . ')';
+		$block .= '[Read more](' . $this->markdown_link_destination( $permalink ) . ')';
 
 		return $block;
 	}
@@ -239,13 +221,4 @@ final class Blog_Index_Markdown {
 		);
 	}
 
-	/**
-	 * @param WP_Post $post Post object.
-	 */
-	private function get_post_title_plain( WP_Post $post ): string {
-		$title = wp_strip_all_tags( get_the_title( $post ) );
-		$title = trim( $title );
-
-		return '' === $title ? '(Untitled)' : $title;
-	}
 }

@@ -23,26 +23,6 @@ final class Single_Post_Markdown {
 	use Markdown_Negotiation;
 
 	/**
-	 * Register WordPress hooks.
-	 */
-	public function register(): void {
-		add_filter( 'query_vars', [ $this, 'register_query_var' ] );
-		add_action( 'template_redirect', [ $this, 'maybe_serve_markdown' ], 0 );
-		add_action( 'wp_head', [ $this, 'print_alternate_link' ], 1 );
-	}
-
-	/**
-	 * Allow ?output_format=md to survive canonical redirects and query parsing.
-	 *
-	 * @param string[] $vars Registered query variables.
-	 * @return string[]
-	 */
-	public function register_query_var( array $vars ): array {
-		$vars[] = 'output_format';
-		return $vars;
-	}
-
-	/**
 	 * Output Markdown instead of HTML when requested.
 	 */
 	public function maybe_serve_markdown(): void {
@@ -204,15 +184,5 @@ final class Single_Post_Markdown {
 		$lines[] = trim( $body_md );
 
 		return implode( "\n", $lines );
-	}
-
-	/**
-	 * Plain one-line title for headings and front matter.
-	 */
-	private function get_post_title_plain( WP_Post $post_object ): string {
-		$title = wp_strip_all_tags( get_the_title( $post_object ) );
-		$title = trim( $title );
-
-		return '' === $title ? '(Untitled)' : $title;
 	}
 }

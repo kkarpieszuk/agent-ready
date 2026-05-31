@@ -8,7 +8,7 @@
 namespace Kolibia_AR;
 
 use Kolibia_AR\Admin\Post_List;
-use Kolibia_AR\Markdown\Single_Post_Markdown;
+use Kolibia_AR\Markdown\Markdown_Router;
 
 /**
  * Plugin singleton and entry point for namespaced code.
@@ -36,7 +36,7 @@ final class Plugin {
 	 * Register hooks.
 	 */
 	public function init(): void {
-		( new Single_Post_Markdown() )->register();
+		( new Markdown_Router() )->register();
 		( new Post_List() )->register();
 	}
 }

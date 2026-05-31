@@ -80,14 +80,22 @@ trait Markdown_Negotiation {
 	 * YAML double-quoted scalar for front matter.
 	 */
 	private function yaml_double_quoted( string $value ): string {
-		return '"' . str_replace( [ '\\', '"' ], [ '\\\\', '\\"' ], $value ) . '"';
+		$value = $this->plain_one_line( $value );
+		$value = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $value ) ?? $value;
+		$value = str_replace(
+			[ '\\', '"', "\t" ],
+			[ '\\\\', '\\"', '\\t' ],
+			$value
+		);
+
+		return '"' . $value . '"';
 	}
 
 	/**
-	 * Single-line plain text for ATX heading.
+	 * Single-line plain text for ATX headings and YAML scalars.
 	 */
 	private function plain_one_line( string $text ): string {
-		return str_replace( "\n", ' ', $text );
+		return preg_replace( '/\R/u', ' ', $text ) ?? $text;
 	}
 
 	/**

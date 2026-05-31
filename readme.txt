@@ -61,7 +61,7 @@ Singular URLs for built-in public types from core (typically posts, pages, and m
 
 == Changelog ==
 
-= {VERSION} =
+= 1.0.1 =
 * Markdown content negotiation for the posts index / homepage (latest posts on front page).
 * Add `X-Markdown-Tokens` response header (rough estimate).
 * Add `title` attribute to alternate link.

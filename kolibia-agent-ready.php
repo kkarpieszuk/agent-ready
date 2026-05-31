@@ -6,7 +6,7 @@
  * Author URI:      https://kolibia.pl
  * Text Domain:     kolibia-agent-ready
  * Domain Path:     /languages
- * Version:         {VERSION}
+ * Version:         1.0.1
  * License:         GPLv2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KOLIBIA_AR_VERSION', '{VERSION}' );
+define( 'KOLIBIA_AR_VERSION', '1.0.1' );
 define( 'KOLIBIA_AR_PLUGIN_FILE', __FILE__ );
 define( 'KOLIBIA_AR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 

@@ -85,39 +85,28 @@ final class Blog_Index_Markdown {
 	}
 
 	/**
-	 * Whether this view is the main posts index (not a static/Woo front page at /).
-	 */
-	private function is_blog_posts_index(): bool {
-		if ( is_feed() || is_embed() || is_trackback() || is_singular() ) {
-			return false;
-		}
-
-		if ( $this->is_static_front_page_url() ) {
-			return false;
-		}
-
-		if ( 'posts' === get_option( 'show_on_front' ) ) {
-			return is_home();
-		}
-
-		$posts_page = (int) get_option( 'page_for_posts' );
-		if ( $posts_page > 0 ) {
-			return is_page( $posts_page );
-		}
-
-		return false;
-	}
-
-	/**
 	 * Canonical URL for the current posts index page (including pagination).
 	 */
 	private function get_index_url(): string {
 		$paged = max( 1, (int) get_query_var( 'paged' ) );
+
+		if ( 'posts' === get_option( 'show_on_front' ) ) {
+			$base = home_url( '/' );
+		} else {
+			$posts_page = (int) get_option( 'page_for_posts' );
+			if ( $posts_page > 0 ) {
+				$permalink = get_permalink( $posts_page );
+				$base      = is_string( $permalink ) ? $permalink : home_url( '/' );
+			} else {
+				$base = home_url( '/' );
+			}
+		}
+
 		if ( $paged > 1 ) {
 			return get_pagenum_link( $paged );
 		}
 
-		return home_url( '/' );
+		return $base;
 	}
 
 	/**

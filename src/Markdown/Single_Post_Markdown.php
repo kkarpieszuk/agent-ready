@@ -50,6 +50,10 @@ final class Single_Post_Markdown {
 			return;
 		}
 
+		if ( $this->is_blog_posts_index() ) {
+			return;
+		}
+
 		$post_types = apply_filters( 'kolibia_ar_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		$post       = $this->resolve_post_for_markdown( $post_types );
 		if ( ! $post instanceof WP_Post ) {
@@ -96,6 +100,10 @@ final class Single_Post_Markdown {
 	 * Print <link rel="alternate" type="text/markdown"> for discoverability.
 	 */
 	public function print_alternate_link(): void {
+		if ( $this->is_blog_posts_index() ) {
+			return;
+		}
+
 		$post_types = apply_filters( 'kolibia_ar_markdown_post_types', Builtin_Post_Types::default_markdown_types() );
 		$post       = $this->resolve_post_for_markdown( $post_types );
 		if ( ! $post instanceof WP_Post ) {
@@ -116,6 +124,10 @@ final class Single_Post_Markdown {
 	 * @param string[] $post_types Allowed post type names.
 	 */
 	private function resolve_post_for_markdown( array $post_types ): ?WP_Post {
+		if ( $this->is_blog_posts_index() ) {
+			return null;
+		}
+
 		if ( is_singular( $post_types ) ) {
 			$post = get_queried_object();
 

@@ -91,7 +91,31 @@ trait Markdown_Negotiation {
 	}
 
 	/**
-	 * True when the request targets the site root used as a static front page.
+	 * Whether the current request is the main posts index (not a static front page at /).
+	 */
+	private function is_blog_posts_index(): bool {
+		if ( is_feed() || is_embed() || is_trackback() ) {
+			return false;
+		}
+
+		if ( $this->is_static_front_page_url() ) {
+			return false;
+		}
+
+		$posts_page = (int) get_option( 'page_for_posts' );
+		if ( $posts_page > 0 && is_page( $posts_page ) ) {
+			return true;
+		}
+
+		if ( 'posts' === get_option( 'show_on_front' ) ) {
+			return is_home();
+		}
+
+		return false;
+	}
+
+	/**
+	 * True when the request targets the static front page (including subdirectory installs).
 	 */
 	private function is_static_front_page_url(): bool {
 		if ( 'page' !== get_option( 'show_on_front' ) ) {
@@ -101,14 +125,43 @@ trait Markdown_Negotiation {
 			return false;
 		}
 
-		$uri  = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
-		$path = wp_parse_url( $uri, PHP_URL_PATH );
-		if ( ! is_string( $path ) || '' === $path ) {
-			$path = '/';
+		// “Your latest posts” on the homepage is is_home(), not a static front page.
+		if ( is_home() ) {
+			return false;
 		}
 
-		$path = untrailingslashit( $path );
+		if ( is_front_page() ) {
+			return true;
+		}
 
-		return '' === $path;
+		return $this->request_path_matches( $this->get_home_path() );
+	}
+
+	/**
+	 * Normalized site home path (e.g. "/" or "/subdir").
+	 */
+	private function get_home_path(): string {
+		$home_path = wp_parse_url( home_url( '/' ), PHP_URL_PATH );
+		$home_path = is_string( $home_path ) ? untrailingslashit( $home_path ) : '';
+
+		return '' === $home_path ? '/' : $home_path;
+	}
+
+	/**
+	 * Normalized path from the current request URI.
+	 */
+	private function get_request_path(): string {
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+		$path = wp_parse_url( $uri, PHP_URL_PATH );
+		$path = is_string( $path ) ? untrailingslashit( $path ) : '';
+
+		return '' === $path ? '/' : $path;
+	}
+
+	/**
+	 * @param string $expected_path Normalized path from get_home_path() or get_request_path().
+	 */
+	private function request_path_matches( string $expected_path ): bool {
+		return $this->get_request_path() === $expected_path;
 	}
 }
